@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using MySqlConnector;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Data.Infrastructure;
@@ -46,14 +47,14 @@ namespace VirtoCommerce.Platform.Security.Repositories
         /// <returns></returns>
         private static bool CheckDatabaseExist(string sourceConnectionString)
         {
-            var builder = new SqlConnectionStringBuilder(sourceConnectionString);
-            var dbName = builder.InitialCatalog; // Catch database name to search from the connection string
-            builder.Remove("Initial Catalog"); // Initial catalog should be removed from connection string, otherwise the connection could not be opened
+            var builder = new MySqlConnectionStringBuilder(sourceConnectionString);
+            var dbName = builder.Database; // Catch database name to search from the connection string
+            builder.Remove("Database"); // Initial catalog should be removed from connection string, otherwise the connection could not be opened
             const string cmdCheckDb =
-                @"select 1 from [sys].[databases] where name=@dbname";
+                @"select 1 from information_schema.SCHEMATA where SCHEMA_NAME=@dbname";
             var connectionString = builder.ConnectionString;
 
-            using var conn = new SqlConnection(connectionString);
+            using var conn = new MySqlConnection(connectionString);
             using var commandCheckDb = conn.CreateCommand();
             commandCheckDb.CommandText = cmdCheckDb;
             var parameterDbName = commandCheckDb.CreateParameter();
@@ -79,24 +80,31 @@ namespace VirtoCommerce.Platform.Security.Repositories
 
             if (CheckDatabaseExist(connectionString))
             {
+                var builder = new MySqlConnectionStringBuilder(connectionString);
+
                 const string cmdCheckMigration =
-                    @"select 1 from [sys].[tables] where name='ServerCertificate'";
+                    @"select 1 from information_schema.TABLES where TABLE_SCHEMA = @dbName AND TABLE_NAME='ServerCertificate'";
 
                 const string cmdServerCert =
-                    @"SELECT TOP (1) [Id]
-                  ,[PublicCertBase64]
-                  ,[PrivateKeyCertBase64]
-                  ,[PrivateKeyCertPassword]
-                FROM [ServerCertificate]";
+                    @"SELECT Id
+                    ,PublicCertBase64
+                    ,PrivateKeyCertBase64
+                    ,PrivateKeyCertPassword
+                FROM ServerCertificate LIMIT 1";
 
                 const int ixId = 0;
                 const int ixPublicCertBase64 = 1;
                 const int ixPrivateKeyCertBase64 = 2;
                 const int ixPrivateKeyCertPassword = 3;
 
-                using var conn = new SqlConnection(connectionString);
+                using var conn = new MySqlConnection(builder.ConnectionString);
                 using var commandCheckMigration = conn.CreateCommand();
                 commandCheckMigration.CommandText = cmdCheckMigration;
+                var parameterDbName = commandCheckMigration.CreateParameter();
+                parameterDbName.ParameterName = "dbName";
+                parameterDbName.Value = builder.Database;
+                commandCheckMigration.Parameters.Add(parameterDbName);
+
                 using var commandServerCert = conn.CreateCommand();
                 commandServerCert.CommandText = cmdServerCert;
 
