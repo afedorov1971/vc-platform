@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -9,7 +10,7 @@ namespace VirtoCommerce.Platform.Security.Repositories
         {
             var builder = new DbContextOptionsBuilder<SecurityDbContext>();
 
-            builder.UseSqlServer("Data Source=(local);Initial Catalog=VirtoCommerce3;Persist Security Info=True;User ID=virto;Password=virto;Connect Timeout=30");
+            builder.UseMySql("server=localhost;user=root;password=virto;database=VirtoCommerce3;", new MySqlServerVersion(new Version(5, 7)));
             builder.UseOpenIddict();
             return new SecurityDbContext(builder.Options);
         }

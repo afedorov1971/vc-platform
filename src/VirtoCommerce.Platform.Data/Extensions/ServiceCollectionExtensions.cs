@@ -28,7 +28,9 @@ namespace VirtoCommerce.Platform.Data.Extensions
     {
         public static IServiceCollection AddPlatformServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<PlatformDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("VirtoCommerce")));
+            services.AddDbContext<PlatformDbContext>(options => options.UseMySql(
+                configuration.GetConnectionString("VirtoCommerce"),
+                new MySqlServerVersion(new Version(5, 7))));
             services.AddTransient<IPlatformRepository, PlatformRepository>();
             services.AddTransient<Func<IPlatformRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetService<IPlatformRepository>());
 
