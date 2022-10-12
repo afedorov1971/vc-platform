@@ -1,5 +1,6 @@
 using Hangfire;
 using Hangfire.Console;
+using Hangfire.MySql;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,7 @@ namespace VirtoCommerce.Platform.Hangfire.Extensions
             var hangfireOptions = appBuilder.ApplicationServices.GetRequiredService<IOptions<HangfireOptions>>().Value;
             if (hangfireOptions.JobStorageType == HangfireJobStorageType.SqlServer)
             {
-                var storage = new SqlServerStorage(configuration.GetConnectionString("VirtoCommerce"), hangfireOptions.SqlServerStorageOptions);
+                var storage = new MySqlStorage(configuration.GetConnectionString("VirtoCommerce"), hangfireOptions.MySqlStorageOptions);
                 hangfireGlobalConfiguration.UseStorage(storage);
                 hangfireGlobalConfiguration.UseConsole();
             }

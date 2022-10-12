@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
@@ -156,7 +157,9 @@ namespace VirtoCommerce.Platform.Web
 
             services.AddDbContext<SecurityDbContext>(options =>
             {
-                options.UseSqlServer(Configuration["Auth:ConnectionString"] ?? Configuration.GetConnectionString("VirtoCommerce"));
+                //options.UseSqlServer(Configuration["Auth:ConnectionString"] ?? Configuration.GetConnectionString("VirtoCommerce"));
+                options.UseMySql(Configuration["Auth:ConnectionString"] ?? Configuration.GetConnectionString("VirtoCommerce"),
+                    new MySqlServerVersion(new Version(5, 7)));
                 // Register the entity sets needed by OpenIddict.
                 // Note: use the generic overload if you need
                 // to replace the default OpenIddict entities.
@@ -545,7 +548,7 @@ namespace VirtoCommerce.Platform.Web
                 app.UsePruneExpiredTokensJob();
 
                 // Complete modules startup and apply their migrations
-                app.UseModules();
+                //app.UseModules();
             });
 
             app.UseEndpoints(SetupEndpoints);

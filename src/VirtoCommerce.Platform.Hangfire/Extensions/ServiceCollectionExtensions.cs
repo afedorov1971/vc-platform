@@ -1,6 +1,7 @@
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Hangfire.SqlServer;
+using Hangfire.MySql;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,7 +24,9 @@ namespace VirtoCommerce.Platform.Hangfire.Extensions
                 .UseRecommendedSerializerSettings()
                 // Call UseSqlServerStorage with fake SqlServerStorageOptions to avoid Hangfire tries to apply its migrations because these never do in case of database absence.
                 // Real options provided in ApplicationBuilderExtensions.UseHangfire where migrations forced to apply.
-                .UseSqlServerStorage(configuration.GetConnectionString("VirtoCommerce"), new SqlServerStorageOptions() { PrepareSchemaIfNecessary = false }));
+                //.Use
+                .UseStorage(new MySqlStorage(configuration.GetConnectionString("VirtoCommerce"), new MySqlStorageOptions
+                       { PrepareSchemaIfNecessary = false })));
             }
             else
             {
