@@ -12,5 +12,9 @@ namespace VirtoCommerce.Platform.Core.Modularity
         public string AuthorizationToken { get; set; }
         public string[] AutoInstallModuleBundles { get; set; }
         public bool IncludePrerelease { get; set; }
+        /// <summary>
+        /// Private access token for gitlab
+        /// </summary>
+        public string PrivateAccessToken { get; set; }
     }
 }

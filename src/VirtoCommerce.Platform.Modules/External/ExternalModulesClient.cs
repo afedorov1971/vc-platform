@@ -25,6 +25,11 @@ namespace VirtoCommerce.Platform.Modules.External
                     webClient.Headers["Accept"] = "application/octet-stream";
                     webClient.Headers["Authorization"] = "token " + _options.AuthorizationToken;
                 }
+                if (!string.IsNullOrEmpty(_options.PrivateAccessToken))
+                {
+                    webClient.Headers["PRIVATE-TOKEN"] = _options.PrivateAccessToken;
+                }
+                
                 return webClient.OpenRead(address);
             }
         }

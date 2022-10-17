@@ -548,7 +548,7 @@ namespace VirtoCommerce.Platform.Web
                 app.UsePruneExpiredTokensJob();
 
                 // Complete modules startup and apply their migrations
-                //app.UseModules();
+                app.UseModules();
             });
 
             app.UseEndpoints(SetupEndpoints);
