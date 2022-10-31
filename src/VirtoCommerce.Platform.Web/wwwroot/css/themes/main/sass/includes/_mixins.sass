@@ -1,4 +1,4 @@
-﻿@mixin center($horizontal: false, $vertical: false, $absolute: false, $important: false)
+@mixin center($horizontal: false, $vertical: false, $absolute: false, $important: false)
    $importantMark: if($important, !important, null)
    position: if($absolute, absolute, relative) $importantMark
    $indent: 50% $importantMark
@@ -20,15 +20,15 @@
   @for $x from $start through $count
     $currentCount: $x
     @if $indexed
-      $currentCount: $x + 1;
+      $currentCount: $x + 1
       #{$selector}:nth-last-child(#{$currentCount}) ~ #{$selector}
         @content
-        width: (100% / $x)
+        width: calc(100% / $x)
     @else
       #{$selector}:nth-last-child(#{$currentCount}),
       #{$selector}:nth-last-child(#{$currentCount}) ~ #{$selector}
         @content
-        width: (100% / $x)
+        width: calc(100% / $x)
 
 @mixin blaseSizes()
   $bladeSizeName: nth($bladeSizes, 1) !global

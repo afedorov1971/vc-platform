@@ -63,7 +63,11 @@ module.exports = env => {
                         use: [
                             { loader: MiniCssExtractPlugin.loader },
                             { loader: 'css-loader' },
-                            { loader: 'sass-loader', options: { includePaths: [require('node-bourbon').includePaths] } }
+                            {
+                                loader: 'sass-loader', options: {
+                                    implementation: require("sass")
+                                }
+                            }
                         ]
                     }
                 ]
